@@ -5,9 +5,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal, Qt
 
-from view.widget.slice_item import SliceItem
 from view.widget.scrollable_list import ScrollableList
-from view.widget.custom_spin_box import CustomSpinBox
+from view.widget.spin_box import SpinBox
 
 from utils.toast_utils import show_toast
 
@@ -69,6 +68,46 @@ class Sidebar(QWidget):
         self.load_button_layout.addWidget(self.load_phantom_button)
         self.buttons_container_layout.addWidget(self.load_buttons_container)
 
+        self.reconstruct_button = QPushButton("Reconstruct")
+        self.reconstruct_button.setObjectName("reconstruct_button")
+        self.reconstruct_button.setFont(font)
+        self.reconstruct_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.buttons_container_layout.addWidget(self.reconstruct_button)
+
+
+
+        self.controls_widget = QWidget()
+        self.controls_widget_layout = QVBoxLayout(self.controls_widget)
+        self.controls_widget_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.controls_widget_layout.setSpacing(25)
+        self.controls_widget_layout.setContentsMargins(16, 16, 16, 16)
+        self.main_widget_layout.addWidget(self.controls_widget,stretch=1)
+        
+        
+        self.range_container = QWidget()
+        self.range_container_layout = QVBoxLayout(self.range_container)
+        self.range_container_layout.setContentsMargins(0,0,0,0)
+        self.controls_widget_layout.addWidget(self.range_container)
+
+        self.range_header = QLabel("Angle Range")
+        self.range_header.setFont(font)
+        self.range_container_layout.addWidget(self.range_header)
+        self.range_container_layout.setSpacing(10)
+
+        font = QFont("Segoe UI", 9)
+        font.setWeight(QFont.Weight.Normal) 
+
+        self.range_start_spin_box = SpinBox("Start")
+        self.range_start_spin_box.set_font(font)
+        self.range_container_layout.addWidget(self.range_start_spin_box)
+        self.range_end_spin_box = SpinBox("End")
+        self.range_end_spin_box.set_font(font)
+        self.range_container_layout.addWidget(self.range_end_spin_box)
+        self.angle_step_spin_box = SpinBox("Step")
+        self.angle_step_spin_box.set_font(font)
+        self.range_container_layout.addWidget(self.angle_step_spin_box)       
+
+
         # self.slice_list_container = QWidget()
         # self.slice_list_container_layout = QVBoxLayout(self.slice_list_container)
         # self.slice_list_container_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -94,84 +133,88 @@ class Sidebar(QWidget):
         # self.slice_list = ScrollableList()
         # self.slice_list_container_layout.addWidget(self.slice_list, stretch=1)
         # self.slice_list.setVisible(False)
+        self.add_excluded_angle_container = QWidget()
+        self.add_excluded_angle_container.setObjectName("sidebar_buttons_container")
+        self.add_excluded_angle_container_layout = QVBoxLayout(self.add_excluded_angle_container)
+        self.add_excluded_angle_container_layout.setContentsMargins(0,0,0,0)
+        self.add_excluded_angle_container_layout.setSpacing(8)
+        self.controls_widget_layout.addWidget(self.add_excluded_angle_container)
 
-        self.controls_widget = QWidget()
-        self.controls_widget_layout = QVBoxLayout(self.controls_widget)
-        self.controls_widget_layout.setContentsMargins(0,0,0,0)
-        self.main_widget_layout.addWidget(self.controls_widget,stretch=1)
+        font = QFont("Segoe UI", 10)
+        font.setWeight(QFont.Weight.Medium) 
+        self.excluded_angle_header = QLabel("Exclude Angle")
+        self.excluded_angle_header.setFont(font)
+        self.add_excluded_angle_container_layout.addWidget(self.excluded_angle_header)
+
+        self.excluded_angle_inputs_container = QWidget()
+        self.excluded_angle_inputs_layout = QHBoxLayout(self.excluded_angle_inputs_container)
+        self.excluded_angle_inputs_layout.setContentsMargins(0,0,0,0)
+        self.excluded_angle_inputs_layout.setSpacing(8)
+        self.add_excluded_angle_container_layout.addWidget(self.excluded_angle_inputs_container)
+
+        font = QFont("Segoe UI", 9)
+        font.setWeight(QFont.Weight.Normal) 
+
+        self.excluded_angle_spin_box = SpinBox(label_text="Angle (Degree)", decimals=2, initial_value=0)
+        self.excluded_angle_spin_box.set_font(font)
+        self.excluded_angle_inputs_layout.addWidget(self.excluded_angle_spin_box)
+
+        self.add_excluded_angle_button = QPushButton("Add Excluded Angle")
+        self.add_excluded_angle_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        font = QFont("Segoe UI", 10)
+        font.setWeight(QFont.Weight.Medium) 
+        self.add_excluded_angle_button.setFont(font)
+        self.add_excluded_angle_button.setObjectName("add_excluded_angle_button")
+        self.add_excluded_angle_container_layout.addWidget(self.add_excluded_angle_button)
+        self.add_excluded_angle_button.clicked.connect(self.on_excluded_angle_added)
+
+
+        self.item_list_container = QWidget()
+        self.item_list_container.setObjectName("item_list_container")
+        self.item_list_container_layout = QVBoxLayout(self.item_list_container)
+        self.item_list_container_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.item_list_container_layout.setContentsMargins(16,16,0,0)
+        self.item_list_container_layout.setSpacing(0)
+        self.main_widget_layout.addWidget(self.item_list_container)
+
+        font = QFont("Segoe UI", 12)
+        font.setWeight(QFont.Weight.Medium) 
+
+        self.item_list_header = QLabel("Cysts")
+        self.item_list_header.setFont(font)
+        self.item_list_container_layout.addWidget(self.item_list_header)
+        self.item_list_header.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+
+        self.item_list = ScrollableList(self.main_window)
+        self.item_list_container_layout.addWidget(self.item_list, stretch=1)
+
         
-        
-        self.range_container = QWidget()
-        self.range_container_layout = QVBoxLayout(self.range_container)
-        self.range_container_layout.setContentsMargins(0,0,0,0)
-        self.controls_widget_layout.addWidget(self.range_container)
-
-        self.range_header = QLabel("Angle Range")
-        self.range_container_layout.addWidget(self.range_header)
-
-        self.range_start_spin_box = CustomSpinBox("Start")
-        self.range_container_layout.addWidget(self.range_start_spin_box)
-        self.range_end_spin_box = CustomSpinBox("End")
-        self.range_container_layout.addWidget(self.range_end_spin_box)
-
-        
 
 
-        
-
-
-    def update_slice_list(self):
-        self.slice_list.clear()
-        for i, s in enumerate(self.slices):
-            item_widget = SliceItem(slice_obj=s, delete_callback=self.delete_slice, index=i)
-            item = QListWidgetItem()
-            item.setSizeHint(item_widget.sizeHint())
-            self.slice_list.addItem(item)
-            self.slice_list.setItemWidget(item, item_widget)
-
-    def delete_slice(self, index):
-        if 0 <= index < len(self.slices):
-            del self.slices[index]
-            for i, s in enumerate(self.slices):
-                s.index = i
-            self.update_slice_list()
+    def on_excluded_angle_added(self):
+            # new_cyst = CystItem(
+            #     depth= self.depth_spin_box.value(),
+            #     lateral= self.lateral_spin_box.value(),
+            #     radius = self.radius_spin_box.value()
+            # )
             
+            # is_cyst_exists = self.main_window.phantom_controller.is_cyst_exists(new_cyst)
 
-
-    def toggle_roi_mode(self):
-        if hasattr(self.main_window, "slice_viewer1") and hasattr(self.main_window, "slice_viewer2"):
-            self.roi_enabled = not self.roi_enabled
-            self.line_enabled = False
-            self.main_window.slice_viewer1.enable_roi_mode(self.roi_enabled)
-            self.main_window.slice_viewer2.enable_roi_mode(self.roi_enabled)
-            self.update_buttons()
+            # if is_cyst_exists:
+            #     show_toast(self.main_window, "Cyst Already Exists",f"Cyst (d={self.depth_spin_box.value()}, l={self.lateral_spin_box.value()}, r={self.radius_spin_box.value()}) already exists.")
+            #     return
             
-            
+            # self.main_window.phantom_controller.add_cyst(new_cyst)
+            # self.item_list.append_item(new_cyst)
 
-    def toggle_line_profile_mode(self):
-        if hasattr(self.main_window, "slice_viewer1") and hasattr(self.main_window, "slice_viewer2"):
-            self.line_enabled = not self.line_enabled
-            self.roi_enabled = False
-            self.main_window.slice_viewer1.enable_line_mode(self.line_enabled)
-            self.main_window.slice_viewer2.enable_line_mode(self.line_enabled)
-            self.update_buttons()
+            show_toast(self.main_window, "Cyst Added",f"Cyst (d={self.excluded_angle_spin_box.value()}, l={self.lateral_spin_box.value()}, r={self.radius_spin_box.value()}) added successfully.")
 
 
-    def update_buttons(self):
-        self.roi_button.setProperty("active", self.roi_enabled)
-        self.roi_button.style().unpolish(self.roi_button)
-        self.roi_button.style().polish(self.roi_button)
-
-        if(self.roi_enabled):
-            self.roi_button.setText("ROI (Active)")
-        else:
-            self.roi_button.setText("ROI")
-
-        self.line_profile_button.setProperty("active", self.line_enabled)
-        self.line_profile_button.style().unpolish(self.line_profile_button)
-        self.line_profile_button.style().polish(self.line_profile_button)
-
-        if(self.line_enabled):
-            self.line_profile_button.setText("Line (Active)")
-        else:
-            self.line_profile_button.setText("Line")
+    # def is_cyst_exists(self, cyst: CystItem):
+    #     for existing_cyst in self.cysts:
+    #         if existing_cyst['x'] == cyst.get_lateral() and existing_cyst['z'] == cyst.get_depth() and existing_cyst['radius'] == cyst.get_radius():
+    #             return True
+    #     return False
+    
+    # def add_cyst(self, cyst: CystItem):
+    #     self.cysts.append({"x": cyst.get_lateral(), "z": cyst.get_depth(), "radius": cyst.get_radius()})

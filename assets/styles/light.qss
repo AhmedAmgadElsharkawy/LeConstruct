@@ -2,34 +2,34 @@
     background-color: #ffffff; 
     font-family: "Segoe UI";
 }
-#load_button, #dialog_ok_btn {
+#load_button, #dialog_ok_btn, #reconstruct_button, #add_excluded_angle_button {
     background-color: #0071df;
     color: #FFFFFF;
     padding:8px 12px;
     border: 0.8px solid #4379EE;
     border-radius: 8px;
 }      
-#roi_button, #line_profile_button, #dialog_cancel_btn {
+#line_profile_button, #dialog_cancel_btn {
     background-color: #FFFFFF;
     color: #000000;
     padding:8px 12px;
     border: 0.8px solid #d3d8de;
     border-radius: 8px;
 }         
-#load_button:hover, #dialog_ok_btn:hover  {
+#load_button:hover, #dialog_ok_btn:hover, #reconstruct_button:hover, #add_excluded_angle_button:hover   {
     background-color: #197FE2;
 }      
-#roi_button:hover, #line_profile_button:hover, #dialog_cancel_btn:hover {
+#line_profile_button:hover, #dialog_cancel_btn:hover {
     background-color: #E1EDF8;
 }
-#roi_button[active="true"],
+#reconstruct_button[active="true"],
 #line_profile_button[active="true"] {
     background-color: #0071df;
     color: white;
     border: 0.8px solid #0071df;
 }
 
-#roi_button[active="true"]:hover,
+#reconstruct_button[active="true"]:hover,
 #line_profile_button[active="true"]:hover {
     background-color: #197FE2;
 }
@@ -154,3 +154,31 @@ QScrollBar::sub-page:horizontal {
     border: 0.8px solid #d3d8de;
     border-radius: 8px;
 }
+
+QDoubleSpinBox {
+    border: 1px solid #d3d8de; 
+    border-radius: 10px;
+    padding: 5px;
+}
+QDoubleSpinBox::up-button {
+    background: rgba(0, 0, 0, 0); 
+}
+QDoubleSpinBox::up-button:hover {
+    background: #d3d8de;
+}
+QDoubleSpinBox::up-arrow {
+    image: url(assets/icons/up-arrow.png); 
+    width: 10px;
+    height: 10px;
+}
+QDoubleSpinBox::down-button {
+    background: rgba(0, 0, 0, 0); 
+}
+QDoubleSpinBox::down-button:hover {
+    background: #d3d8de;
+}
+QDoubleSpinBox::down-arrow {
+    image: url(assets/icons/down-arrow.png);
+    width: 10px;
+    height: 10px;
+}               
