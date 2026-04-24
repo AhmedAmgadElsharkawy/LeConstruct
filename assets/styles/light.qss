@@ -36,7 +36,7 @@
 #sidebar_main_widget{
     border-right: 0.8px solid #d3d8de;
 }
-#sidebar_buttons_container{
+#sidebar_buttons_container, #controls_widget{
     border-bottom: 0.8px solid #d3d8de;
 }
 

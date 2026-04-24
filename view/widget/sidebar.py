@@ -77,11 +77,12 @@ class Sidebar(QWidget):
 
 
         self.controls_widget = QWidget()
+        self.controls_widget.setObjectName("controls_widget")
         self.controls_widget_layout = QVBoxLayout(self.controls_widget)
         self.controls_widget_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.controls_widget_layout.setSpacing(25)
         self.controls_widget_layout.setContentsMargins(16, 16, 16, 16)
-        self.main_widget_layout.addWidget(self.controls_widget,stretch=1)
+        self.main_widget_layout.addWidget(self.controls_widget)
         
         
         self.range_container = QWidget()
@@ -97,42 +98,21 @@ class Sidebar(QWidget):
         font = QFont("Segoe UI", 9)
         font.setWeight(QFont.Weight.Normal) 
 
+        self.angle_range_inputs_container = QWidget()
+        self.angle_range_inputs_container_layout = QVBoxLayout(self.angle_range_inputs_container)
+        self.range_container_layout.addWidget(self.angle_range_inputs_container)
+        self.angle_range_inputs_container_layout.setContentsMargins(16,0,0,0)
+
         self.range_start_spin_box = SpinBox("Start")
         self.range_start_spin_box.set_font(font)
-        self.range_container_layout.addWidget(self.range_start_spin_box)
+        self.angle_range_inputs_container_layout.addWidget(self.range_start_spin_box)
         self.range_end_spin_box = SpinBox("End")
         self.range_end_spin_box.set_font(font)
-        self.range_container_layout.addWidget(self.range_end_spin_box)
+        self.angle_range_inputs_container_layout.addWidget(self.range_end_spin_box)
         self.angle_step_spin_box = SpinBox("Step")
         self.angle_step_spin_box.set_font(font)
-        self.range_container_layout.addWidget(self.angle_step_spin_box)       
+        self.angle_range_inputs_container_layout.addWidget(self.angle_step_spin_box)       
 
-
-        # self.slice_list_container = QWidget()
-        # self.slice_list_container_layout = QVBoxLayout(self.slice_list_container)
-        # self.slice_list_container_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        # self.slice_list_container_layout.setContentsMargins(16,16,0,0)
-        # self.slice_list_container_layout.setSpacing(0)
-        # self.main_widget_layout.addWidget(self.slice_list_container)
-
-        # font = QFont("Segoe UI", 12)
-        # font.setWeight(QFont.Weight.Medium) 
-
-        # self.slice_list_header = QLabel("Loaded Slices")
-        # self.slice_list_header.setFont(font)
-        # self.slice_list_container_layout.addWidget(self.slice_list_header)
-        # self.slice_list_header.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-
-        # font = QFont("Segoe UI", 12)
-        # font.setWeight(QFont.Weight.Light) 
-        # self.no_slices_label = QLabel("No Slices Loaded")
-        # self.no_slices_label.setFont(font)
-        # self.slice_list_container_layout.addWidget(self.no_slices_label)
-        # self.no_slices_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-
-        # self.slice_list = ScrollableList()
-        # self.slice_list_container_layout.addWidget(self.slice_list, stretch=1)
-        # self.slice_list.setVisible(False)
         self.add_excluded_angle_container = QWidget()
         self.add_excluded_angle_container.setObjectName("sidebar_buttons_container")
         self.add_excluded_angle_container_layout = QVBoxLayout(self.add_excluded_angle_container)
@@ -140,11 +120,11 @@ class Sidebar(QWidget):
         self.add_excluded_angle_container_layout.setSpacing(8)
         self.controls_widget_layout.addWidget(self.add_excluded_angle_container)
 
-        font = QFont("Segoe UI", 10)
-        font.setWeight(QFont.Weight.Medium) 
-        self.excluded_angle_header = QLabel("Exclude Angle")
-        self.excluded_angle_header.setFont(font)
-        self.add_excluded_angle_container_layout.addWidget(self.excluded_angle_header)
+        # font = QFont("Segoe UI", 10)
+        # font.setWeight(QFont.Weight.Medium) 
+        # self.excluded_angle_header = QLabel("Exclude Angle")
+        # self.excluded_angle_header.setFont(font)
+        # self.add_excluded_angle_container_layout.addWidget(self.excluded_angle_header)
 
         self.excluded_angle_inputs_container = QWidget()
         self.excluded_angle_inputs_layout = QHBoxLayout(self.excluded_angle_inputs_container)
@@ -180,7 +160,7 @@ class Sidebar(QWidget):
         font = QFont("Segoe UI", 12)
         font.setWeight(QFont.Weight.Medium) 
 
-        self.item_list_header = QLabel("Cysts")
+        self.item_list_header = QLabel("Excluded Angels")
         self.item_list_header.setFont(font)
         self.item_list_container_layout.addWidget(self.item_list_header)
         self.item_list_header.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
@@ -198,7 +178,7 @@ class Sidebar(QWidget):
             #     radius = self.radius_spin_box.value()
             # )
             
-            # is_cyst_exists = self.main_window.phantom_controller.is_cyst_exists(new_cyst)
+            # is_angle_exists = self.main_window.phantom_controller.is_cyst_exists(new_cyst)
 
             # if is_cyst_exists:
             #     show_toast(self.main_window, "Cyst Already Exists",f"Cyst (d={self.depth_spin_box.value()}, l={self.lateral_spin_box.value()}, r={self.radius_spin_box.value()}) already exists.")

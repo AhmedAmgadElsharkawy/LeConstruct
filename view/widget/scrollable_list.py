@@ -31,7 +31,7 @@ class ScrollableList(QWidget):
 
         font = QFont("Segoe UI", 12)
         font.setWeight(QFont.Weight.Light) 
-        self.no_items_label = QLabel("No cysts added")
+        self.no_items_label = QLabel("No angles added")
         self.no_items_label.setFont(font)
         self.main_widget_layout.addWidget(self.no_items_label)
         self.no_items_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
