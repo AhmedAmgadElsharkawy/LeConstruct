@@ -52,6 +52,26 @@ class MainWindow(QMainWindow):
         self.body_container_layout.setContentsMargins(24, 24, 24, 24)
         self.main_widget_layout.addWidget(self.body_container)
 
+        self.top_bar_container = QWidget()
+        self.top_bar_layout = QHBoxLayout(self.top_bar_container)
+        self.top_bar_layout.setContentsMargins(0, 0, 0, 0)
+        self.top_bar_layout.setSpacing(0)
+        
+        self.top_bar_layout.addStretch(1)
+        
+        from PyQt5.QtWidgets import QPushButton
+        from PyQt5.QtGui import QFont
+        from PyQt5.QtCore import Qt
+        
+        font = QFont("Segoe UI", 10)
+        font.setWeight(QFont.Weight.Medium)
+        self.sinogram_button = QPushButton("Sinogram")
+        self.sinogram_button.setObjectName("load_button")
+        self.sinogram_button.setFont(font)
+        self.sinogram_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.top_bar_layout.addWidget(self.sinogram_button)
+        
+        self.body_container_layout.addWidget(self.top_bar_container)
 
         self.slice_viewers_container = QWidget()
         self.slice_viewers_container_layout = QHBoxLayout(self.slice_viewers_container)
@@ -94,8 +114,11 @@ class MainWindow(QMainWindow):
         self.quantitative_metrics_container_layout.addWidget(self.metric2)
         self.quantitative_metrics_container_layout.addWidget(self.metric3)
 
-
         self.body_container_layout.addWidget(self.quantitative_metrics_container, stretch=0)
+        
+        from view.window.sinogram_window import SinogramWindow
+        self.sinogram_window = SinogramWindow()
+        self.sinogram_button.clicked.connect(self.sinogram_window.show)
 
         self.ft_controller = FTController(self)
         self.metrics_controller = MetricsController(self)
