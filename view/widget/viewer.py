@@ -2,8 +2,10 @@ import pyqtgraph as pg
 import numpy as np
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
 from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtCore import pyqtSignal
 
 class Viewer(QWidget):
+    imageChanged = pyqtSignal(object)
     def __init__(self, main_window, title = "Viewer"):
         super().__init__()
 
@@ -43,9 +45,10 @@ class Viewer(QWidget):
 
         self.data = None
 
-    def display(self, data: np.ndarray):
+    def set(self, data: np.ndarray):
         self.data = data
         self.image_view.setImage(data.T, autoLevels=True)
+        self.imageChanged.emit(self.data)
 
         # self.image_view.getView().setLimits(
         # xMin=0,
@@ -57,6 +60,7 @@ class Viewer(QWidget):
     def reset(self):
         self.data = None
         self.image_view.clear()
+        self.imageChanged.emit(None)
 
 
 

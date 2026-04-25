@@ -11,6 +11,13 @@ from view.widget.viewer import Viewer
 from view.widget.metric_widget import MetricWidget
 from view.style_manager import apply_stylesheet
 
+from controller.reconstruction_controller import ReconstructionController
+from controller.load_controller import LoadController
+from controller.metrics_controller import MetricsController
+from controller.ft_controller import FTController
+
+import numpy as np
+
 class MainWindow(QMainWindow):
     __instance = None
 
@@ -52,11 +59,11 @@ class MainWindow(QMainWindow):
         self.slice_viewers_container_layout.setSpacing(24)
         self.body_container_layout.addWidget(self.slice_viewers_container, stretch=1)
 
-        self.slice_viewer1 = Viewer(self, title="Reference Slice")
-        self.slice_viewer2 = Viewer(self, title="Reconstructed Slice")
+        self.reference_slice_viewer = Viewer(self, title="Reference Slice")
+        self.reconstructed_slice_viewer = Viewer(self, title="Reconstructed Slice")
 
-        self.slice_viewers_container_layout.addWidget(self.slice_viewer1)
-        self.slice_viewers_container_layout.addWidget(self.slice_viewer2)
+        self.slice_viewers_container_layout.addWidget(self.reference_slice_viewer)
+        self.slice_viewers_container_layout.addWidget(self.reconstructed_slice_viewer)
 
         
         self.ft_viewers_container = QWidget()
@@ -65,11 +72,11 @@ class MainWindow(QMainWindow):
         self.ft_viewers_container_layout.setSpacing(24)
         self.body_container_layout.addWidget(self.ft_viewers_container, stretch=1)
 
-        self.ft_viewer1 = Viewer(self, title= "Refrence Slice FT")
-        self.ft_viewer2 = Viewer(self, title= "Reconstructed Slice FT")
+        self.reference_slice_ft_viewer = Viewer(self, title= "Refrence Slice FT")
+        self.reconstructed_slice_ft_viewer = Viewer(self, title= "Reconstructed Slice FT")
 
-        self.ft_viewers_container_layout.addWidget(self.ft_viewer1)
-        self.ft_viewers_container_layout.addWidget(self.ft_viewer2)
+        self.ft_viewers_container_layout.addWidget(self.reference_slice_ft_viewer)
+        self.ft_viewers_container_layout.addWidget(self.reconstructed_slice_ft_viewer)
 
 
         
@@ -89,6 +96,11 @@ class MainWindow(QMainWindow):
 
 
         self.body_container_layout.addWidget(self.quantitative_metrics_container, stretch=0)
+
+        self.ft_controller = FTController(self)
+        self.metrics_controller = MetricsController(self)
+        self.load_controller = LoadController(self)
+        self.reconstruction_controller = ReconstructionController(self)
         
 
         self.setMinimumWidth(800)
