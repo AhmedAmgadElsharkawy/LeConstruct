@@ -87,7 +87,7 @@ class Sidebar(QWidget):
         font = QFont("Segoe UI", 9)
         font.setWeight(QFont.Weight.Normal) 
 
-        self.reconstruction_method_combo_box = ComboBox(label = "Method", combo_box_items_list=["Method 1", "Method 2"])
+        self.reconstruction_method_combo_box = ComboBox(label = "Method", combo_box_items_list=["FBP", "iterative"])
         self.controls_widget_layout.addWidget(self.reconstruction_method_combo_box)
         self.reconstruction_method_combo_box.set_font(font)
         
