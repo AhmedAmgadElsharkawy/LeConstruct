@@ -16,7 +16,7 @@ class ListItem(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(5, 2, 5, 2)
 
-        self.label = QLabel(item_obj.name)
+        self.label = QLabel(f"{item_obj}°")
         self.label.setFont(font)
         layout.addWidget(self.label)
 

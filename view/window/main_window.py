@@ -53,8 +53,8 @@ class MainWindow(QMainWindow):
         self.slice_viewers_container_layout.setSpacing(24)
         self.body_container_layout.addWidget(self.slice_viewers_container, stretch=1)
 
-        self.slice_viewer1 = Viewer(self)
-        self.slice_viewer2 = Viewer(self)
+        self.slice_viewer1 = Viewer(self, title="Reference Slice")
+        self.slice_viewer2 = Viewer(self, title="Reconstructed Slice")
 
         self.slice_viewers_container_layout.addWidget(self.slice_viewer1)
         self.slice_viewers_container_layout.addWidget(self.slice_viewer2)
@@ -66,8 +66,8 @@ class MainWindow(QMainWindow):
         self.ft_viewers_container_layout.setSpacing(24)
         self.body_container_layout.addWidget(self.ft_viewers_container, stretch=1)
 
-        self.ft_viewer1 = Viewer(self)
-        self.ft_viewer2 = Viewer(self)
+        self.ft_viewer1 = Viewer(self, title= "Refrence Slice FT")
+        self.ft_viewer2 = Viewer(self, title= "Reconstructed Slice FT")
 
         self.ft_viewers_container_layout.addWidget(self.ft_viewer1)
         self.ft_viewers_container_layout.addWidget(self.ft_viewer2)

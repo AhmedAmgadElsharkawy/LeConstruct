@@ -41,6 +41,8 @@
 }
 
 
+
+
 QListWidget {
     background: #ffffff;
     border: none;

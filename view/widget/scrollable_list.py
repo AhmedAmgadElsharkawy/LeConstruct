@@ -66,12 +66,22 @@ class ScrollableList(QWidget):
 
     def delete_item(self, index):
         if 0 <= index < len(self.items):
-            self.main_window.phantom_controller.delete_cyst(self.items[index])
-            show_toast(self.main_window, "Cyst Deleted", f"Cyst (d={self.items[index].get_depth()}, l={self.items[index].get_lateral()}, r={self.items[index].get_radius()}) deleted successfully.")
+            # Store the value before deleting for the toast notification
+            deleted_angle = self.items[index]
+            
+            # Delete the item
             del self.items[index]
-            for i, s in enumerate(self.items):
-                s.index = i
+            
+            # Refresh the UI list
             self.update_item_list()
+            
+            # Show success toast
+            show_toast(
+                self.main_window, 
+                title="Angle Removed", 
+                text=f"Angle {deleted_angle}° removed successfully.",
+                type="SUCCESS"
+            )
 
     def append_item(self,new_item):
         self.items.append(new_item)
@@ -86,5 +96,10 @@ class ScrollableList(QWidget):
 
     def get_items(self):
         return self.items
+    
+    def is_item_exist(self, item_value):
+        return item_value in self.items
+            
+            
 
 

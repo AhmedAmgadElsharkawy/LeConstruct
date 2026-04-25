@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QListWidgetItem,
-    QFileDialog, QLabel, QSizePolicy
+    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QSizePolicy
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal, Qt
@@ -135,7 +134,7 @@ class Sidebar(QWidget):
         font = QFont("Segoe UI", 9)
         font.setWeight(QFont.Weight.Normal) 
 
-        self.excluded_angle_spin_box = SpinBox(label_text="Angle (Degree)", decimals=2, initial_value=0)
+        self.excluded_angle_spin_box = SpinBox(label_text="Angle", decimals=2, initial_value=0)
         self.excluded_angle_spin_box.set_font(font)
         self.excluded_angle_inputs_layout.addWidget(self.excluded_angle_spin_box)
 
@@ -172,29 +171,22 @@ class Sidebar(QWidget):
 
 
     def on_excluded_angle_added(self):
-            # new_cyst = CystItem(
-            #     depth= self.depth_spin_box.value(),
-            #     lateral= self.lateral_spin_box.value(),
-            #     radius = self.radius_spin_box.value()
-            # )
-            
-            # is_angle_exists = self.main_window.phantom_controller.is_cyst_exists(new_cyst)
+        angle_value = self.excluded_angle_spin_box.value()
+        
+        if self.item_list.is_item_exist(angle_value):
+            show_toast(
+                self.main_window, 
+                title="Angle Already Exists", 
+                text=f"Angle {angle_value}° is already excluded.",
+                type="ERROR"
+            )
+            return
+        
+        self.item_list.append_item(angle_value)
 
-            # if is_cyst_exists:
-            #     show_toast(self.main_window, "Cyst Already Exists",f"Cyst (d={self.depth_spin_box.value()}, l={self.lateral_spin_box.value()}, r={self.radius_spin_box.value()}) already exists.")
-            #     return
-            
-            # self.main_window.phantom_controller.add_cyst(new_cyst)
-            # self.item_list.append_item(new_cyst)
-
-            show_toast(self.main_window, "Cyst Added",f"Cyst (d={self.excluded_angle_spin_box.value()}, l={self.lateral_spin_box.value()}, r={self.radius_spin_box.value()}) added successfully.")
-
-
-    # def is_cyst_exists(self, cyst: CystItem):
-    #     for existing_cyst in self.cysts:
-    #         if existing_cyst['x'] == cyst.get_lateral() and existing_cyst['z'] == cyst.get_depth() and existing_cyst['radius'] == cyst.get_radius():
-    #             return True
-    #     return False
-    
-    # def add_cyst(self, cyst: CystItem):
-    #     self.cysts.append({"x": cyst.get_lateral(), "z": cyst.get_depth(), "radius": cyst.get_radius()})
+        show_toast(
+            self.main_window, 
+            title="Angle Excluded", 
+            text=f"Angle {angle_value}° added successfully.",
+            type="SUCCESS"
+        )
