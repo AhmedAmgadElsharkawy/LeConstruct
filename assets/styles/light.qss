@@ -184,3 +184,28 @@ QDoubleSpinBox::down-arrow {
     width: 10px;
     height: 10px;
 }               
+                
+QComboBox#combo_box {
+    border: 1px solid #d3d8de; 
+    border-radius: 10px;
+    padding: 5px;
+    background-color: transparent;
+    selection-background-color: #f5f7fa;
+}
+/* QComboBox#combo_box QAbstractItemView {
+    background-color: #f5f7fa;
+    color: #343C6A;
+    selection-background-color: #F8F8F8;
+    selection-color: #343C6A;
+} */
+                
+QComboBox#combo_box::drop-down {
+    background-color: transparent; 
+    width: 20px; 
+}
+
+QComboBox#combo_box::down-arrow {
+    image: url(assets/icons/down-arrow.png); 
+    width: 10px;
+    height: 10px;
+}

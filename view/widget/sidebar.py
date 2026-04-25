@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 
 from view.widget.scrollable_list import ScrollableList
 from view.widget.spin_box import SpinBox
+from view.widget.combo_box import ComboBox
 
 from utils.toast_utils import show_toast
 
@@ -82,12 +83,21 @@ class Sidebar(QWidget):
         self.controls_widget_layout.setSpacing(25)
         self.controls_widget_layout.setContentsMargins(16, 16, 16, 16)
         self.main_widget_layout.addWidget(self.controls_widget)
-        
+
+        font = QFont("Segoe UI", 9)
+        font.setWeight(QFont.Weight.Normal) 
+
+        self.reconstruction_method_combo_box = ComboBox(label = "Method", combo_box_items_list=["Method 1", "Method 2"])
+        self.controls_widget_layout.addWidget(self.reconstruction_method_combo_box)
+        self.reconstruction_method_combo_box.set_font(font)
         
         self.range_container = QWidget()
         self.range_container_layout = QVBoxLayout(self.range_container)
         self.range_container_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.range_container)
+
+        font = QFont("Segoe UI", 10)
+        font.setWeight(QFont.Weight.Medium) 
 
         self.range_header = QLabel("Angle Range")
         self.range_header.setFont(font)

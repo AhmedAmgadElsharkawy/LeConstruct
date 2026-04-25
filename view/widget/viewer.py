@@ -43,7 +43,7 @@ class Viewer(QWidget):
 
         self.data = None
 
-    def set_slice(self, data: np.ndarray):
+    def display(self, data: np.ndarray):
         self.data = data
         self.image_view.setImage(data.T, autoLevels=True)
 
@@ -53,6 +53,10 @@ class Viewer(QWidget):
         # xMax=data.shape[1] - 1,
         # yMax=data.shape[0] - 1
         # )
+        
+    def reset(self):
+        self.data = None
+        self.image_view.clear()
 
 
 

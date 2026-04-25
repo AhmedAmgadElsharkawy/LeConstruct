@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import (
 from view.widget.sidebar import Sidebar 
 from view.widget.viewer import Viewer
 
-from view.widget.plot_widget import PlotWidget
 from view.widget.metric_widget import MetricWidget
 from view.style_manager import apply_stylesheet
 
