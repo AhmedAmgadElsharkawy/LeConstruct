@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         super().__init__() 
         MainWindow.__instance = self
 
-        self.setWindowTitle("SliceScope")
+        self.setWindowTitle("LeConstruct")
 
 
         self.main_widget = QWidget(self)

@@ -5,7 +5,7 @@ from PyQt5.QtGui import QIcon
 
 def main():
     app = QApplication(sys.argv)
-    # app.setWindowIcon(QIcon("assets/icons/favicon.png"))
+    app.setWindowIcon(QIcon("assets/icons/favicon.png"))
     main_window = MainWindow()
     main_window.showMaximized()
     sys.exit(app.exec())
