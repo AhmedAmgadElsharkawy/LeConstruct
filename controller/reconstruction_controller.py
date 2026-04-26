@@ -103,7 +103,6 @@ class ReconstructionController:
                     proj_id = astra.create_projector('linear', proj_geom, vol_geom)
                 # Forward projection
                 sinogram_id, sinogram = astra.create_sino(original_image, proj_id)
-                self.sinogram = resize(sinogram,(256,256),anti_aliasing=True)
 
                 # Reconstruction volume
                 rec_id = astra.data2d.create('-vol', vol_geom)
