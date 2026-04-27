@@ -24,7 +24,7 @@ class MetricsController:
         self.show_metrics_on_GUI(psnr_value, ssim_value)
 
     def compute_metrics(self, reference_slice, reconstructed_slice):
-        psnr_value = cv2.PSNR(reference_slice, reconstructed_slice)
+        psnr_value = cv2.PSNR(reference_slice, reconstructed_slice, 1.0)
         ssim_value, _ = ssim(reference_slice, reconstructed_slice, full=True, data_range=1.0)
 
         psnr_value = round(psnr_value, 2)
