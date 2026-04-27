@@ -57,7 +57,6 @@ class ReconstructionController:
                     elif reconstruction_method == "SIRT":
                         alg_type = "SIRT_CUDA"
                 else:
-                    
                     if reconstruction_method == "SART":
                         alg_type = "SART"
                     elif reconstruction_method == "SIRT":
@@ -65,6 +64,8 @@ class ReconstructionController:
                 self.ASTRA_Reconstruction(original_image, angles, alg_type)
             except NameError:
                 show_toast(self.main_window, "Error", "ASTRA toolbox not available. Cannot perform ASTRA-based reconstruction.", type="ERROR")
+        
+        self.main_window.metrics_controller.update_metrics()
 
     def FBP_Reconstruction(self, original_image, angles):
         try:
