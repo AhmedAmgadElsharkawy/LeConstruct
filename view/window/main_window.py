@@ -106,13 +106,11 @@ class MainWindow(QMainWindow):
         self.quantitative_metrics_container_layout.setContentsMargins(16,16,16,16)
         self.quantitative_metrics_container_layout.setSpacing(0)
 
-        self.metric1 = MetricWidget("metric 1")
-        self.metric2 = MetricWidget("metric 2")
-        self.metric3 = MetricWidget("metric 3")
-
-        self.quantitative_metrics_container_layout.addWidget(self.metric1)
-        self.quantitative_metrics_container_layout.addWidget(self.metric2)
-        self.quantitative_metrics_container_layout.addWidget(self.metric3)
+        self.PSNR_metric = MetricWidget("PSNR")
+        self.SSIM_metric = MetricWidget("SSIM")
+        
+        self.quantitative_metrics_container_layout.addWidget(self.PSNR_metric)
+        self.quantitative_metrics_container_layout.addWidget(self.SSIM_metric)
 
         self.body_container_layout.addWidget(self.quantitative_metrics_container, stretch=0)
         
