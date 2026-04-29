@@ -1,6 +1,6 @@
 import pyqtgraph as pg
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy
 from PyQt5.QtGui import QColor, QFont
 from PyQt5.QtCore import pyqtSignal
 
@@ -38,7 +38,8 @@ class Viewer(QWidget):
         self.image_view.ui.histogram.hide()
         self.image_view.ui.roiBtn.hide()
         self.image_view.ui.menuBtn.hide()
-        self.main_widget_layout.addWidget(self.image_view)
+        self.image_view.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.main_widget_layout.addWidget(self.image_view, stretch=1)
 
         self.image_view.getView().invertY(False)
         self.image_view.getView().setAspectLocked(True)

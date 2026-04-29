@@ -47,6 +47,9 @@ class LoadController:
 
         self.main_window.reference_slice_viewer.set(slice_obj.data)
 
+        # Auto-reconstruct on initial load so the UI is populated immediately
+        self.main_window.reconstruction_controller.reconstruct()
+
         show_toast(
             self.main_window,
             "CT Loaded",
@@ -119,6 +122,7 @@ class LoadController:
         )
 
         self.main_window.reference_slice_viewer.set(slice_obj.data)
+        self.main_window.reconstruction_controller.reconstruct()
 
         show_toast(
             self.main_window,

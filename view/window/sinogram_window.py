@@ -8,7 +8,8 @@ class SinogramWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sinogram")
-        self.setMinimumSize(600, 400)
+        self.setMinimumSize(1100, 800)
+        self.resize(1200, 900)
         
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(16, 16, 16, 16)

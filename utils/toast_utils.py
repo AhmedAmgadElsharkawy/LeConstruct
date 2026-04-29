@@ -5,7 +5,7 @@ from pyqttoast import Toast as PyQtToast, ToastPreset
 def show_toast(parent, title="Success!", text="Finished", type="SUCCESS"):
     toast = PyQtToast(parent)
     toast.setPositionRelativeToWidget(parent)
-    toast.setFixedSize(QSize(350, 80))
+    toast.setFixedSize(QSize(520, 100))
     toast.setDuration(3000)
     toast.setTitle(title)
     toast.setText(text)

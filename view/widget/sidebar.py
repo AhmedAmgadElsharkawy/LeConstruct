@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QSizePolicy
+    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QSizePolicy, QFrame
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal, Qt
@@ -18,7 +18,7 @@ class Sidebar(QWidget):
 
     def __init__(self,main_window):
         super().__init__()
-        self.setFixedWidth(330)
+        self.setFixedWidth(520)
 
         self.roi_enabled = False
         self.line_enabled = False
@@ -90,6 +90,11 @@ class Sidebar(QWidget):
         self.reconstruction_method_combo_box = ComboBox(label = "Method", combo_box_items_list=["FBP", "SART", "SIRT"])
         self.controls_widget_layout.addWidget(self.reconstruction_method_combo_box)
         self.reconstruction_method_combo_box.set_font(font)
+
+        self.controls_separator = QFrame()
+        self.controls_separator.setFrameShape(QFrame.Shape.HLine)
+        self.controls_separator.setFrameShadow(QFrame.Shadow.Sunken)
+        self.controls_widget_layout.addWidget(self.controls_separator)
         
         self.range_container = QWidget()
         self.range_container_layout = QVBoxLayout(self.range_container)
@@ -112,15 +117,20 @@ class Sidebar(QWidget):
         self.range_container_layout.addWidget(self.angle_range_inputs_container)
         self.angle_range_inputs_container_layout.setContentsMargins(16,0,0,0)
 
-        self.range_start_spin_box = SpinBox("Start")
+        self.range_start_spin_box = SpinBox("Start", start=0, end=180, step=0.1, decimals=1)
         self.range_start_spin_box.set_font(font)
         self.angle_range_inputs_container_layout.addWidget(self.range_start_spin_box)
-        self.range_end_spin_box = SpinBox("End", initial_value=180)
+        self.range_end_spin_box = SpinBox("End", initial_value=180, start=0, end=180, step=0.1, decimals=1)
         self.range_end_spin_box.set_font(font)
         self.angle_range_inputs_container_layout.addWidget(self.range_end_spin_box)
-        self.angle_step_spin_box = SpinBox("Step", initial_value=1)
+        self.angle_step_spin_box = SpinBox("Step", initial_value=1, start=0.1, end=180, step=0.1, decimals=1)
         self.angle_step_spin_box.set_font(font)
         self.angle_range_inputs_container_layout.addWidget(self.angle_step_spin_box)       
+
+        self.excluded_section_separator = QFrame()
+        self.excluded_section_separator.setFrameShape(QFrame.Shape.HLine)
+        self.excluded_section_separator.setFrameShadow(QFrame.Shadow.Sunken)
+        self.controls_widget_layout.addWidget(self.excluded_section_separator)
 
         self.add_excluded_angle_container = QWidget()
         self.add_excluded_angle_container.setObjectName("sidebar_buttons_container")
@@ -144,7 +154,7 @@ class Sidebar(QWidget):
         font = QFont("Segoe UI", 9)
         font.setWeight(QFont.Weight.Normal) 
 
-        self.excluded_angle_spin_box = SpinBox(label_text="Angle", decimals=2, initial_value=0)
+        self.excluded_angle_spin_box = SpinBox(label_text="Angle", decimals=2, initial_value=0, start=0, end=180, step=0.1)
         self.excluded_angle_spin_box.set_font(font)
         self.excluded_angle_inputs_layout.addWidget(self.excluded_angle_spin_box)
 
