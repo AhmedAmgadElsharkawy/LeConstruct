@@ -46,8 +46,9 @@ class ReconstructionController:
             show_toast(self.main_window, "Error", "No angles available for reconstruction.", type="ERROR")
             return
 
+        success = False
         if reconstruction_method == "FBP":
-            self.FBP_Reconstruction(original_image, angles)
+            success = self.FBP_Reconstruction(original_image, angles)
         else:
             # Algorithm selection
             try:
@@ -61,11 +62,12 @@ class ReconstructionController:
                         alg_type = "SART"
                     elif reconstruction_method == "SIRT":
                         alg_type = "SIRT"
-                self.ASTRA_Reconstruction(original_image, angles, alg_type)
+                success = self.ASTRA_Reconstruction(original_image, angles, alg_type)
             except NameError:
                 show_toast(self.main_window, "Error", "ASTRA toolbox not available. Cannot perform ASTRA-based reconstruction.", type="ERROR")
-        
-        self.main_window.metrics_controller.update_metrics()
+
+        if success:
+            self.main_window.metrics_controller.update_metrics()
 
     def FBP_Reconstruction(self, original_image, angles):
         try:
@@ -83,19 +85,24 @@ class ReconstructionController:
                 self.main_window.ft_controller.update_refrence_slice_ft(original_image)
                 self.main_window.ft_controller.update_reconstructed_slice_ft(reconstructed_image)
                 show_toast(self.main_window, "Success", "FBP Reconstruction completed.", type="SUCCESS")
+                return True
         except Exception as e:
                 show_toast(self.main_window, "Error", f"Reconstruction failed: {str(e)}", type="ERROR")
+                return False
 
     def ASTRA_Reconstruction(self, original_image, original_angles, alg_type):
          try:
               # Convert to radians
+                original_image = np.asarray(original_image, dtype=np.float32)
                 angles = np.deg2rad(original_angles)
+                rows, cols = original_image.shape[:2]
+                detector_count = max(rows, cols)
 
                 # Volume geometry
-                vol_geom = astra.create_vol_geom(256, 256)
+                vol_geom = astra.create_vol_geom(rows, cols)
 
                 # Projection geometry
-                proj_geom = astra.create_proj_geom('parallel', 1.0, 256, angles)
+                proj_geom = astra.create_proj_geom('parallel', 1.0, detector_count, angles)
 
                 # Projector
                 if astra.use_cuda():
@@ -131,6 +138,8 @@ class ReconstructionController:
                 self.main_window.ft_controller.update_refrence_slice_ft(original_image)
                 self.main_window.ft_controller.update_reconstructed_slice_ft(reconstruction)
                 show_toast(self.main_window, "Success", "ASTRA Reconstruction completed.", type="SUCCESS")
+                return True
                 
          except Exception as e:
                 show_toast(self.main_window, "Error", f"Reconstruction failed: {str(e)}", type="ERROR")
+                return False
