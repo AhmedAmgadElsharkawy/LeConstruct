@@ -18,7 +18,7 @@ class Sidebar(QWidget):
 
     def __init__(self,main_window):
         super().__init__()
-        self.setFixedWidth(520)
+        self.setFixedWidth(330)
 
         self.roi_enabled = False
         self.line_enabled = False
@@ -91,10 +91,10 @@ class Sidebar(QWidget):
         self.controls_widget_layout.addWidget(self.reconstruction_method_combo_box)
         self.reconstruction_method_combo_box.set_font(font)
 
-        self.controls_separator = QFrame()
-        self.controls_separator.setFrameShape(QFrame.Shape.HLine)
-        self.controls_separator.setFrameShadow(QFrame.Shadow.Sunken)
-        self.controls_widget_layout.addWidget(self.controls_separator)
+        # self.controls_separator = QFrame()
+        # self.controls_separator.setFrameShape(QFrame.Shape.HLine)
+        # self.controls_separator.setFrameShadow(QFrame.Shadow.Sunken)
+        # self.controls_widget_layout.addWidget(self.controls_separator)
         
         self.range_container = QWidget()
         self.range_container_layout = QVBoxLayout(self.range_container)
@@ -127,10 +127,10 @@ class Sidebar(QWidget):
         self.angle_step_spin_box.set_font(font)
         self.angle_range_inputs_container_layout.addWidget(self.angle_step_spin_box)       
 
-        self.excluded_section_separator = QFrame()
-        self.excluded_section_separator.setFrameShape(QFrame.Shape.HLine)
-        self.excluded_section_separator.setFrameShadow(QFrame.Shadow.Sunken)
-        self.controls_widget_layout.addWidget(self.excluded_section_separator)
+        # self.excluded_section_separator = QFrame()
+        # self.excluded_section_separator.setFrameShape(QFrame.Shape.HLine)
+        # self.excluded_section_separator.setFrameShadow(QFrame.Shadow.Sunken)
+        # self.controls_widget_layout.addWidget(self.excluded_section_separator)
 
         self.add_excluded_angle_container = QWidget()
         self.add_excluded_angle_container.setObjectName("sidebar_buttons_container")
