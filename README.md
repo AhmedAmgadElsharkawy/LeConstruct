@@ -3,15 +3,22 @@ LeConstruct is a desktop application designed to simulate and visualize the CT i
 
 
 ## Table of Contents
+- [Preview](#preview)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Features](#features)
 - [Contributors](#contributors)
 
 
+## Preview
+
+![Preview](assets/preview.png)
+
 ## Prerequisites
 
-- Python 3.6 or higher
+*   **Python 3.10 or higher**
+*   **Miniconda / Anaconda** (Recommended for managing C++ and CUDA dependencies)
+*   **NVIDIA GPU** (Optional, but highly recommended for fast iterative reconstruction)
 
 ## Installation
 
@@ -21,9 +28,10 @@ LeConstruct is a desktop application designed to simulate and visualize the CT i
    git clone https://github.com/AhmedAmgadElsharkawy/LeConstruct.git
    ``````
 
-2. **Install The Dependincies:**
+2. **Install The Dependencies:**
     ``````
     pip install -r requirements.txt
+    conda install -c astra-toolbox -c nvidia astra-toolbox
     ``````
 
 3. **Run The App:**
