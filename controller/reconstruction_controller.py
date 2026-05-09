@@ -41,13 +41,8 @@ class ReconstructionController:
             show_toast(self.main_window, "Error", "Angle range must be greater than angle step.", type="ERROR")
             return
 
-        angles = np.linspace(
-            angle_range_start,
-            angle_range_end,
-            angle_count,
-            endpoint=False,
-            dtype=np.float32,
-        )
+        angles = np.arange(angle_range_start, angle_range_end + angle_step, angle_step)
+        print(angles)
         
         # Remove excluded angles (using a small tolerance for floating point matching)
         if excluded_angles_list:
