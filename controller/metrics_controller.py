@@ -46,7 +46,12 @@ class MetricsController:
     def compute_metrics(self, reference_slice, reconstructed_slice):
         reference_slice, reconstructed_slice = self._prepare_metric_inputs(reference_slice, reconstructed_slice)
 
-        psnr_value = cv2.PSNR(reference_slice, reconstructed_slice, 1.0)
+        mask = reference_slice > 0.05
+
+        ref_roi = reference_slice[mask]
+        recon_roi = reconstructed_slice[mask]
+
+        psnr_value = cv2.PSNR(ref_roi, recon_roi, 1.0)
         ssim_value, _ = ssim(reference_slice, reconstructed_slice, full=True, data_range=1.0)
 
         psnr_value = round(psnr_value, 2)
