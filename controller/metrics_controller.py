@@ -46,18 +46,23 @@ class MetricsController:
     def compute_metrics(self, reference_slice, reconstructed_slice):
         reference_slice, reconstructed_slice = self._prepare_metric_inputs(reference_slice, reconstructed_slice)
 
-        mask = reference_slice > 0.05
-
-        ref_roi = reference_slice[mask]
-        recon_roi = reconstructed_slice[mask]
-
-        psnr_value = cv2.PSNR(ref_roi, recon_roi, 1.0)
+        psnr_value = self.caluculate_psnr(reference_slice, reconstructed_slice)
         ssim_value, _ = ssim(reference_slice, reconstructed_slice, full=True, data_range=1.0)
 
         psnr_value = round(psnr_value, 2)
         ssim_value = round(ssim_value, 4)
 
         return psnr_value, ssim_value
+    
+    def caluculate_psnr(self, reference_slice, reconstructed_slice):
+        mask = reference_slice > 0.05
+
+        ref_roi = reference_slice[mask]
+        recon_roi = reconstructed_slice[mask]
+
+        psnr_value = cv2.PSNR(ref_roi, recon_roi, 1.0)
+
+        return psnr_value
 
     def show_metrics_on_GUI(self, psnr_value, ssim_value):
         self.main_window.PSNR_metric.set_value(str(psnr_value) + " dB")
