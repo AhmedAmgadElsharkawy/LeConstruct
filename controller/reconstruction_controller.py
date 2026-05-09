@@ -20,6 +20,9 @@ class ReconstructionController:
         angle_step = self.main_window.sidebar.angle_step_spin_box.value()
         excluded_angles_list = self.main_window.sidebar.item_list.get_items()
 
+        apply_noise = self.main_window.sidebar.enable_noise_checkbox.isChecked()
+        i0_dose = self.main_window.sidebar.dose_spin_box.value()
+
         print(reconstruction_method, angle_range_start, angle_range_end, angle_step, excluded_angles_list)
 
         ref_viewer = self.main_window.reference_slice_viewer
@@ -59,7 +62,7 @@ class ReconstructionController:
 
         success = False
         if reconstruction_method == "FBP":
-            success = self.FBP_Reconstruction(original_image, angles)
+            success = self.FBP_Reconstruction(original_image, angles, apply_noise, i0_dose)
         else:
             # Algorithm selection
             try:
@@ -80,17 +83,20 @@ class ReconstructionController:
         if success:
             self.main_window.metrics_controller.update_metrics()
 
-    def FBP_Reconstruction(self, original_image, angles):
+    def FBP_Reconstruction(self, original_image, angles, apply_noise, i0_dose):
         try:
                 start_time = time.perf_counter()
                 # 1. Forward projection (radon transform)
+                # 1. Forward projection creates a perfect sinogram
                 sinogram = radon(original_image, theta=angles)
                 
-                # Update Sinogram Plot
+                if apply_noise:
+                    sinogram = self.add_poisson_noise(sinogram, i0=i0_dose)
+                
                 self.main_window.sinogram_window.set_data(sinogram, angles)
 
-                # 2. Filtered back projection (iradon transform)
                 reconstructed_image = iradon(sinogram, theta=angles, filter_name='ramp')
+                # ... rest of your code
                 
                 # Show image
                 self.main_window.reconstructed_slice_viewer.set(reconstructed_image)
@@ -173,3 +179,31 @@ class ReconstructionController:
             if sinogram_id is not None: astra.data2d.delete(sinogram_id)
             if proj_id is not None: astra.projector.delete(proj_id)
             if rec_id is not None: astra.data2d.delete(rec_id)
+
+
+
+    def add_poisson_noise(self, sinogram, i0=1000000):
+        # 1. Check if the object is mathematically "too dense"
+        max_val = np.max(sinogram)
+        scale_factor = 1.0
+        
+        # If the max integral is > 5.0, it will absorb almost all photons.
+        # We scale it down so the densest part allows ~0.6% of photons through.
+        if max_val > 5.0:
+            scale_factor = 5.0 / max_val
+            
+        # Scale down to realistic physical attenuation
+        realistic_sinogram = sinogram * scale_factor
+        
+        # 2. Apply Poisson physics
+        expected_photons = i0 * np.exp(-realistic_sinogram)
+        noisy_photons = np.random.poisson(expected_photons)
+        
+        # Prevent log(0) errors if a ray is completely blocked
+        noisy_photons = np.maximum(noisy_photons, 0.1) 
+        
+        # 3. Convert back to attenuation
+        noisy_sinogram = -np.log(noisy_photons / i0)
+        
+        # 4. Scale back up to original math dimensions so ASTRA/FBP works correctly
+        return noisy_sinogram / scale_factor

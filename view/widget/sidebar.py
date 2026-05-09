@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QSizePolicy, QFrame
+    QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QLabel, QSizePolicy, QCheckBox
 )
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal, Qt
@@ -87,16 +87,55 @@ class Sidebar(QWidget):
         font = QFont("Segoe UI", 9)
         font.setWeight(QFont.Weight.Normal) 
 
+# ... existing code ...
         self.reconstruction_method_combo_box = ComboBox(label = "Method", combo_box_items_list=["FBP", "SART", "SIRT"])
         self.controls_widget_layout.addWidget(self.reconstruction_method_combo_box)
         self.reconstruction_method_combo_box.set_font(font)
 
-        # self.controls_separator = QFrame()
-        # self.controls_separator.setFrameShape(QFrame.Shape.HLine)
-        # self.controls_separator.setFrameShadow(QFrame.Shadow.Sunken)
-        # self.controls_widget_layout.addWidget(self.controls_separator)
-        
+        # --- NEW: Noise Simulation Controls ---
+        self.noise_container = QWidget()
+        self.noise_layout = QVBoxLayout(self.noise_container)
+        self.noise_layout.setContentsMargins(0, 0, 0, 0)
+        self.noise_layout.setSpacing(10)
+        self.controls_widget_layout.addWidget(self.noise_container)
+
+
+        font = QFont("Segoe UI", 10)
+        font.setWeight(QFont.Weight.Medium) 
+
+        self.noise_header_container = QWidget()
+        self.noise_header_container_layout = QHBoxLayout(self.noise_header_container)
+        self.noise_header_container_layout.setContentsMargins(0, 0, 8, 0)
+        self.enable_noise_checkbox = QCheckBox()
+        self.enablel_noise_label = QLabel("Enable Projection Noise")
+        self.enablel_noise_label.setFont(font)
+        font_checkbox = QFont("Segoe UI", 10)
+        font_checkbox.setWeight(QFont.Weight.Medium)
+        self.enable_noise_checkbox.setFont(font)
+        self.enable_noise_checkbox.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.noise_header_container_layout.addWidget(self.enablel_noise_label)
+        self.noise_header_container_layout.addStretch()
+        self.noise_header_container_layout.addWidget(self.enable_noise_checkbox)
+        self.noise_layout.addWidget(self.noise_header_container)
+
+        # Add a custom SpinBox for the Dose (I0) using your existing component
+        self.nose_dose_container = QWidget()
+        self.nose_dose_container_layout = QHBoxLayout(self.nose_dose_container)
+        self.nose_dose_container_layout.setContentsMargins(16, 0, 0, 0)
+        font_spinbox = QFont("Segoe UI", 9)
+        font_spinbox.setWeight(QFont.Weight.Normal)
+        self.dose_spin_box = SpinBox("Dose (I0)", initial_value=500, start=1, end=1000000, step=10, decimals=0)
+        self.dose_spin_box.set_font(font_spinbox)
+        self.dose_spin_box.setEnabled(False) # Disabled by default until checkbox is checked
+        self.nose_dose_container_layout.addWidget(self.dose_spin_box)
+        self.noise_layout.addWidget(self.nose_dose_container)
+
+        # Connect the checkbox state to enable/disable the dose spinbox
+        self.enable_noise_checkbox.toggled.connect(self.dose_spin_box.setEnabled)
+        # --------------------------------------
+
         self.range_container = QWidget()
+        # ... rest of your existing code ...
         self.range_container_layout = QVBoxLayout(self.range_container)
         self.range_container_layout.setContentsMargins(0,0,0,0)
         self.controls_widget_layout.addWidget(self.range_container)
