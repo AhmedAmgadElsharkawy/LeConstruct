@@ -65,12 +65,9 @@ class MetricsController:
         return psnr_value
     
     def calculate_ssim(self, reference_slice, reconstructed_slice):
-        ssim_value, ssim_map = ssim(reference_slice, reconstructed_slice, full=True, data_range=1.0)
+        ssim_value, _ = ssim(reference_slice, reconstructed_slice, full=True, data_range=1.0)
 
-        mask = self.calculate_mask(reference_slice, reconstructed_slice)
-        masked_ssim = ssim_map[mask].mean()
-
-        return masked_ssim
+        return ssim_value
     
     def calculate_mask(self, reference_slice, reconstructed_slice):
         mask = reference_slice > 0.05

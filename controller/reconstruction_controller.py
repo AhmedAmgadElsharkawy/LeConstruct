@@ -78,7 +78,7 @@ class ReconstructionController:
                 self.main_window.sinogram_window.set_data(sinogram, angles)
 
                 # 2. Filtered back projection (iradon transform)
-                reconstructed_image = iradon(sinogram, theta=angles, filter_name='ramp')
+                reconstructed_image = iradon(sinogram, theta=angles, filter_name='None')
                 
                 # Show image
                 self.main_window.reconstructed_slice_viewer.set(reconstructed_image)
