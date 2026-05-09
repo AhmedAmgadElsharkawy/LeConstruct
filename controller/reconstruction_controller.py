@@ -84,13 +84,13 @@ class ReconstructionController:
         try:
                 start_time = time.perf_counter()
                 # 1. Forward projection (radon transform)
-                sinogram = radon(original_image, theta=angles)
+                sinogram = radon(original_image, theta=angles, circle= False)
                 
                 # Update Sinogram Plot
                 self.main_window.sinogram_window.set_data(sinogram, angles)
 
                 # 2. Filtered back projection (iradon transform)
-                reconstructed_image = iradon(sinogram, theta=angles, filter_name='ramp')
+                reconstructed_image = iradon(sinogram, theta=angles, filter_name='ramp', circle= False)
                 
                 # Show image
                 self.main_window.reconstructed_slice_viewer.set(reconstructed_image)
