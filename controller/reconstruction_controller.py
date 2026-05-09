@@ -36,7 +36,7 @@ class ReconstructionController:
         
         # start angle, end angle and the step.
         # smaller steps -> more projections to be smeared and added together -> better reconstruction but more computationally expensive
-        angles = np.arange(angle_range_start, angle_range_end+angle_step, angle_step)
+        angles = np.arange(angle_range_start, angle_range_end, angle_step)
         
         # Remove excluded angles (using a small tolerance for floating point matching)
         if excluded_angles_list:
@@ -120,10 +120,11 @@ class ReconstructionController:
                 alg_cfg['ReconstructionDataId'] = rec_id
                 alg_cfg['ProjectionDataId'] = sinogram_id
                 alg_cfg['ProjectorId'] = proj_id
+                iterations = 200
 
                 # Run reconstruction
                 alg_id = astra.algorithm.create(alg_cfg)
-                astra.algorithm.run(alg_id, 50)
+                astra.algorithm.run(alg_id, iterations)
 
                 reconstruction = astra.data2d.get(rec_id)
 
@@ -131,6 +132,7 @@ class ReconstructionController:
                 astra.algorithm.delete(alg_id)
                 astra.data2d.delete(sinogram_id)
                 astra.projector.delete(proj_id)
+                astra.data2d.delete(rec_id)
 
                 # Display
                 self.main_window.sinogram_window.set_data(sinogram, original_angles)
