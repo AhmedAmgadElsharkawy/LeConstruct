@@ -55,7 +55,7 @@ class MetricsController:
         return psnr_value, ssim_value
     
     def caluculate_psnr(self, reference_slice, reconstructed_slice):
-        mask = self.calculate_mask(reference_slice, reconstructed_slice)
+        mask = self.calculate_mask(reference_slice)
 
         ref_roi = reference_slice[mask]
         recon_roi = reconstructed_slice[mask]
@@ -69,8 +69,8 @@ class MetricsController:
 
         return ssim_value
     
-    def calculate_mask(self, reference_slice, reconstructed_slice):
-        mask = reference_slice > 0.05
+    def calculate_mask(self, img):
+        mask = img > 0.05
 
         return mask
 

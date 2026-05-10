@@ -81,8 +81,17 @@ class ReconstructionController:
                 # 1. Forward projection (radon transform)
                 sinogram = radon(original_image, theta=angles, circle= False)
                 
+                detector_length = sinogram.shape[0]
+                
+                visual_sinogram = np.zeros((detector_length, 181), dtype=np.float32)
+                
+                for i, angle in enumerate(angles):
+                    idx = int(round(angle)) 
+                    if idx <= 180:
+                        visual_sinogram[:, idx] = sinogram[:, i]
+
                 # Update Sinogram Plot
-                self.main_window.sinogram_window.set_data(sinogram, angles)
+                self.main_window.sinogram_window.set_data(visual_sinogram, np.arange(180))
 
                 # 2. Filtered back projection (iradon transform)
                 reconstructed_image = iradon(sinogram, theta=angles, filter_name='ramp', circle= False)
@@ -98,9 +107,112 @@ class ReconstructionController:
                 show_toast(self.main_window, "Error", f"Reconstruction failed: {str(e)}", type="ERROR")
                 return False
 
+    # def FBP_Reconstruction(self, original_image, angles):
+    #     try:
+    #             start_time = time.perf_counter()
+    #             # 1. Forward projection (radon transform)
+    #             sinogram = radon(original_image, theta=angles, circle= False)
+                
+    #             # Update Sinogram Plot
+    #             self.main_window.sinogram_window.set_data(sinogram, angles)
+
+    #             # 2. Filtered back projection (iradon transform)
+    #             reconstructed_image = iradon(sinogram, theta=angles, filter_name='ramp', circle= False)
+                
+    #             # Show image
+    #             self.main_window.reconstructed_slice_viewer.set(reconstructed_image)
+    #             self.main_window.ft_controller.update_refrence_slice_ft(original_image)
+    #             self.main_window.ft_controller.update_reconstructed_slice_ft(reconstructed_image)
+    #             elapsed = time.perf_counter() - start_time
+    #             show_toast(self.main_window, "Success", f"FBP Reconstruction completed in {elapsed:.2f} seconds.", type="SUCCESS")
+    #             return True
+    #     except Exception as e:
+    #             show_toast(self.main_window, "Error", f"Reconstruction failed: {str(e)}", type="ERROR")
+    #             return False
+
+    # def ASTRA_Reconstruction(self, original_image, original_angles, alg_type):
+    #     # Initialize ASTRA IDs so the finally block doesn't throw ReferenceErrors
+    #     proj_id = sinogram_id = rec_id = alg_id = None
+    #     try:
+    #         # Convert to radians
+    #         start_time = time.perf_counter()
+    #         original_image = np.array(original_image, dtype=np.float32, copy=True)
+    #         original_image -= original_image.min()
+    #         max_value = float(original_image.max())
+    #         if max_value > 0:
+    #             original_image /= max_value
+
+    #         angles = np.deg2rad(original_angles)
+    #         rows, cols = original_image.shape[:2]
+    #         detector_count = int(np.ceil(np.sqrt(rows**2 + cols**2)))
+
+    #         # Volume geometry
+    #         vol_geom = astra.create_vol_geom(rows, cols)
+
+    #         # Projection geometry
+    #         proj_geom = astra.create_proj_geom('parallel', 1.0, detector_count, angles)
+
+    #         # Projector
+    #         if astra.use_cuda():
+    #             proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
+    #         else:
+    #             proj_id = astra.create_projector('linear', proj_geom, vol_geom)
+    #         # Forward projection
+    #         sinogram_id, sinogram = astra.create_sino(original_image, proj_id)
+
+    #         # Reconstruction volume
+    #         rec_id = astra.data2d.create('-vol', vol_geom)
+
+    #         # Configure algorithm
+    #         alg_cfg = astra.astra_dict(alg_type)
+    #         alg_cfg['ReconstructionDataId'] = rec_id
+    #         alg_cfg['ProjectionDataId'] = sinogram_id
+    #         alg_cfg['ProjectorId'] = proj_id
+
+    #         if "SART" in alg_type:
+    #             iterations = len(angles) * 10
+    #         elif "SIRT" in alg_type:
+    #             iterations = 200
+            
+    #         # Run reconstruction
+    #         alg_id = astra.algorithm.create(alg_cfg)
+    #         astra.algorithm.run(alg_id, iterations)
+
+    #         reconstruction = astra.data2d.get(rec_id)
+    #         detector_length = sinogram.T.shape[0]
+
+    #         visual_sinogram = np.zeros((detector_length, 181), dtype=np.float32)
+                
+    #         for i, angle in enumerate(original_angles):
+    #                 idx = int(round(angle)) 
+    #                 if idx <= 180:
+    #                     visual_sinogram[:, idx] = sinogram.T[:, i]
+
+        
+    #         # Display
+    #         self.main_window.sinogram_window.set_data(visual_sinogram, original_angles)
+    #         self.main_window.reconstructed_slice_viewer.set(reconstruction)
+    #         self.main_window.ft_controller.update_refrence_slice_ft(original_image)
+    #         self.main_window.ft_controller.update_reconstructed_slice_ft(reconstruction)
+    #         elapsed = time.perf_counter() - start_time
+    #         show_toast(self.main_window, "Success", f"ASTRA Reconstruction completed in {elapsed:.2f} seconds.", type="SUCCESS")
+    #         return True
+
+    #     except Exception as e:
+    #         show_toast(self.main_window, "Error", f"Reconstruction failed: {str(e)}", type="ERROR")
+    #         return False
+
+    #     finally:
+    #         # Prevents memory leaks by ensuring C++ objects are destroyed even if an error occurs
+    #         if alg_id is not None: astra.algorithm.delete(alg_id)
+    #         if sinogram_id is not None: astra.data2d.delete(sinogram_id)
+    #         if proj_id is not None: astra.projector.delete(proj_id)
+    #         if rec_id is not None: astra.data2d.delete(rec_id)
     def ASTRA_Reconstruction(self, original_image, original_angles, alg_type):
         # Initialize ASTRA IDs so the finally block doesn't throw ReferenceErrors
         proj_id = sinogram_id = rec_id = alg_id = None
+        fbp_rec_id = fbp_alg_id = None # Added for FBP initialization
+
         try:
             # Convert to radians
             start_time = time.perf_counter()
@@ -125,32 +237,64 @@ class ReconstructionController:
                 proj_id = astra.create_projector('cuda', proj_geom, vol_geom)
             else:
                 proj_id = astra.create_projector('linear', proj_geom, vol_geom)
+            
             # Forward projection
             sinogram_id, sinogram = astra.create_sino(original_image, proj_id)
 
-            # Reconstruction volume
-            rec_id = astra.data2d.create('-vol', vol_geom)
+            # ---------------------------------------------------------
+            # 1. GENERATE FBP INITIAL IMAGE
+            # ---------------------------------------------------------
+            fbp_alg_type = "FBP_CUDA" if astra.use_cuda() else "FBP"
+            fbp_rec_id = astra.data2d.create('-vol', vol_geom)
+            
+            fbp_cfg = astra.astra_dict(fbp_alg_type)
+            fbp_cfg['ReconstructionDataId'] = fbp_rec_id
+            fbp_cfg['ProjectionDataId'] = sinogram_id
+            fbp_cfg['ProjectorId'] = proj_id
+            
+            fbp_alg_id = astra.algorithm.create(fbp_cfg)
+            astra.algorithm.run(fbp_alg_id)
+            
+            # Extract the FBP image to use as our starting point
+            fbp_initial_image = astra.data2d.get(fbp_rec_id)
 
-            # Configure algorithm
+            # ---------------------------------------------------------
+            # 2. INITIALIZE ITERATIVE RECONSTRUCTION WITH FBP IMAGE
+            # ---------------------------------------------------------
+            # We pass fbp_initial_image here instead of creating an empty volume
+            rec_id = astra.data2d.create('-vol', vol_geom, fbp_initial_image)
+
+            # Configure iterative algorithm (SART/SIRT)
             alg_cfg = astra.astra_dict(alg_type)
             alg_cfg['ReconstructionDataId'] = rec_id
             alg_cfg['ProjectionDataId'] = sinogram_id
             alg_cfg['ProjectorId'] = proj_id
 
+            # Note: Because you are starting with an FBP image, you can significantly 
+            # reduce these iteration counts if you want to speed up processing.
             if "SART" in alg_type:
-                iterations = len(angles) * 10
+                iterations = len(angles) * 5  # Reduced slightly due to FBP headstart
             elif "SIRT" in alg_type:
-                iterations = 200
+                iterations = 100              # Reduced slightly due to FBP headstart
+            else:
+                iterations = 100
             
             # Run reconstruction
             alg_id = astra.algorithm.create(alg_cfg)
             astra.algorithm.run(alg_id, iterations)
 
             reconstruction = astra.data2d.get(rec_id)
+            detector_length = sinogram.T.shape[0]
 
-        
+            visual_sinogram = np.zeros((detector_length, 181), dtype=np.float32)
+                
+            for i, angle in enumerate(original_angles):
+                    idx = int(round(angle)) 
+                    if idx <= 180:
+                        visual_sinogram[:, idx] = sinogram.T[:, i]
+
             # Display
-            self.main_window.sinogram_window.set_data(sinogram, original_angles)
+            self.main_window.sinogram_window.set_data(visual_sinogram, original_angles)
             self.main_window.reconstructed_slice_viewer.set(reconstruction)
             self.main_window.ft_controller.update_refrence_slice_ft(original_image)
             self.main_window.ft_controller.update_reconstructed_slice_ft(reconstruction)
@@ -168,3 +312,7 @@ class ReconstructionController:
             if sinogram_id is not None: astra.data2d.delete(sinogram_id)
             if proj_id is not None: astra.projector.delete(proj_id)
             if rec_id is not None: astra.data2d.delete(rec_id)
+            
+            # Clean up the temporary FBP objects
+            if fbp_alg_id is not None: astra.algorithm.delete(fbp_alg_id)
+            if fbp_rec_id is not None: astra.data2d.delete(fbp_rec_id)
